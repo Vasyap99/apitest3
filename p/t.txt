@@ -1,0 +1,36 @@
+Конструкторы не наследуются. В этом легко убедиться, немного исправив ваши классы
+class Car {
+    public Car(int speed) {
+        System.out.println("Машина");
+    }
+}
+class Bmw extends Car { }
+public class Example {
+    public static void main(String[] args) {
+        Bmw bmw = new Bmw(200);
+    }
+}
+При компиляции получите ошибку
+Example.java:7: error: constructor Car in class Car cannot be applied to given types;
+class Bmw extends Car { }
+^
+  required: int
+  found: no arguments
+  reason: actual and formal argument lists differ in length
+App.java:13: error: constructor Bmw in class Bmw cannot be applied to given types;
+        Bmw bmw = new Bmw(200);
+                  ^
+  required: no arguments
+  found: int
+  reason: actual and formal argument lists differ in length
+2 errors
+Из ошибки понятно, что в Bmw нет конструктора принимающего целочисленный аргумент, а значит он не унаследовался от Car.
+Когда вы явно не объявляете конструктор, компилятор создаёт конструктор без аргументов, содержащий ровно одну строку кода - вызов конструктора без аргументов родительского класса:
+class Bmw extends Car {
+  Bmw();
+    Code:
+       0: aload_0
+       1: invokespecial #1    // Method Car."<init>":()V
+       4: return
+}
+Чтобы создать объект, виртуальная машина должна вызвать конструктор его класса и всех родительских, вплоть до Object. Поэтому вы видите вывод строки "Машина".
